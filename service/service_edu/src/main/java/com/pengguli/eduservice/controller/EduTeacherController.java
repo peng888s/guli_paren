@@ -28,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/eduservice/teacher")
 @Api(description="讲师管理")
+//@CrossOrigin
 public class EduTeacherController {
 
     @Autowired
@@ -81,9 +82,9 @@ public class EduTeacherController {
             queryWrapper.ge("gmt_create",teacherQuery.getBegin());
         }
         if (!StringUtils.isEmpty(teacherQuery.getEnd())) {
-            queryWrapper.ge("gmt_modified",teacherQuery.getEnd());
+            queryWrapper.le("gmt_create",teacherQuery.getEnd());
         }
-
+        queryWrapper.orderByDesc("gmt_create");
         eduTeacherService.page(eduTeacherPage,queryWrapper);
         // 封装的分页数据
         List<EduTeacher> records = eduTeacherPage.getRecords();
@@ -105,7 +106,7 @@ public class EduTeacherController {
 
     @ApiOperation(value = "修改前根据id查询讲师")
     @GetMapping("getTeacher/{id}")
-    public R getTeacher(@PathVariable Integer id){
+    public R getTeacher(@PathVariable long id){
         EduTeacher eduTeacher = eduTeacherService.getById(id);
         return R.ok().data("eduteacher",eduTeacher);
     }
@@ -120,5 +121,7 @@ public class EduTeacherController {
             return R.error();
         }
     }
+
+
 }
 
